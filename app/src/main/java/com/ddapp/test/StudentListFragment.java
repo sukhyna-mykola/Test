@@ -7,6 +7,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -15,12 +18,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 
 public class StudentListFragment extends Fragment {
     private RecyclerView listOfStudents;
     private StudentsAdapter adapter;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+    
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -43,6 +51,22 @@ public class StudentListFragment extends Fragment {
         updateUI();
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_filter:
+                Toast.makeText(getContext(), "Click", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     private class RequestTask extends AsyncTask<String, String, Integer> {
 
@@ -83,31 +107,11 @@ public class StudentListFragment extends Fragment {
             listOfStudents.setAdapter(adapter);
 
         }
+
     }
 
 
     private void updateUI() {
-      /*  DataPodcasts data = DataPodcasts.getInstance(getActivity());
-        List<Podcast> podcasts = data.getPodcasts();
-
-        if (adapter == null) {
-            adapter = new AdapterPodcasts(podcasts, getActivity());
-            listOfPodcast.setAdapter(adapter);
-        } else {
-            adapter.notifyDataSetChanged();
-        }
-
-        if (!MusicService.isRunning()) {
-            new RequestTask().execute();
-        } else {
-            listOfPodcast.setAdapter(adapter);
-            listOfPodcast.setVisibility(View.VISIBLE);
-            statusImg.clearAnimation();
-            statusText.setText(R.string.synchronize_complete);
-            statusImg.setImageResource(R.drawable.icon_done);
-
-        }
-*/
 
     }
 
