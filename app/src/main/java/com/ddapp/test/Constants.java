@@ -18,4 +18,6 @@ public class Constants {
     public static final String LAST_NAME_TAG = "LastName";
     public static final String ID_TAG = "Id";
 
+    public static final String ID_KEY = "com.ddapp.test.ID_KEY";
+
 }

@@ -15,13 +15,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 public class StudentListFragment extends Fragment {
     private RecyclerView listOfStudents;
-    private MyAdapter adapter;
-    private List<Student> students;
+    private StudentsAdapter adapter;
 
     @Nullable
     @Override
@@ -54,7 +52,7 @@ public class StudentListFragment extends Fragment {
             try {
                 InputStream is = connect(Constants.DATA_URL);
                 XmlParser parser = new XmlParser();
-                students = (ArrayList<Student>) parser.parse(is);
+                StudentsManager.getInstance(getContext()).setStudents(parser.parse(is));
                 return HttpURLConnection.HTTP_OK;
 
             } catch (Exception e) {
@@ -80,7 +78,8 @@ public class StudentListFragment extends Fragment {
         @Override
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
-            adapter = new MyAdapter(students);
+            adapter = new StudentsAdapter(StudentsManager.getInstance(getContext()).getStudents(),
+                    getContext());
             listOfStudents.setAdapter(adapter);
 
         }

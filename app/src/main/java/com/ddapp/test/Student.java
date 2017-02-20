@@ -1,9 +1,7 @@
 package com.ddapp.test;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,6 +13,7 @@ public class Student {
     private String firstName;
     private String lastName;
     private long birthday;
+    private List<Course> courses;
 
     public Student(String id, String firstName, String lastName, long birthday, List<Course> courses) {
         this.id = id;
@@ -45,8 +44,20 @@ public class Student {
         return id;
     }
 
-    private List<Course> courses;
+    public String getStringBirthday() {
+        Date date = new Date(birthday * 1000);
+        SimpleDateFormat df2 = new SimpleDateFormat("dd.MM.yy");
+        String dateText = df2.format(date);
+        return dateText;
+    }
 
-
+    public float getAveregeMark() {
+        float result = 0;
+        float count = courses.size();
+        for (Course course : courses) {
+            result += course.getMark();
+        }
+        return result / count;
+    }
 
 }
