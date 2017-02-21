@@ -17,7 +17,11 @@ public class StudentsManager {
             manager = new StudentsManager();
         return manager;
     }
-
+    public static StudentsManager getInstance() {
+        if (manager == null)
+            manager = new StudentsManager();
+        return manager;
+    }
     private StudentsManager() {
         students = new ArrayList<>();
     }

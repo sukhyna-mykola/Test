@@ -28,7 +28,7 @@ public class StudentListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
-    
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -61,7 +61,8 @@ public class StudentListFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_item_filter:
-                Toast.makeText(getContext(), "Click", Toast.LENGTH_SHORT).show();
+                FilterFragment fragment = new FilterFragment();
+                fragment.show(getActivity().getSupportFragmentManager(), Constants.FILTER_DIALOG_TAG);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

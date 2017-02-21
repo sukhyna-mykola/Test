@@ -20,4 +20,7 @@ public class Constants {
 
     public static final String ID_KEY = "com.ddapp.test.ID_KEY";
 
+    public static final String FILTER_DIALOG_TAG = "com.ddapp.test.FILTER_DIALOG";
+    public static final String INFO_DIALOG_TAG = "com.ddapp.test.INFO_DIALOG";
+
 }

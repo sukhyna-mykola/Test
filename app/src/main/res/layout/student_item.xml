@@ -12,18 +12,18 @@
         android:layout_centerVertical="true"
         android:src="@drawable/icon_student_photo" />
 
-    <ImageView
-        android:id="@+id/student_statistics"
+    <ImageButton
+        android:id="@+id/student_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/icon_student_statistics" />
+        android:background="@drawable/icon_student_info" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/student_statistics"
+        android:layout_toLeftOf="@+id/student_info"
         android:layout_toRightOf="@+id/student_photo"
         android:orientation="vertical">
 

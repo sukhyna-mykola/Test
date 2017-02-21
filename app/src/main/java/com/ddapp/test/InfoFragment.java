@@ -2,7 +2,6 @@ package com.ddapp.test;
 
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -10,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 /**
@@ -20,6 +20,7 @@ public class InfoFragment extends DialogFragment {
     private RecyclerView listOfCourses;
     private TextView averageMark;
     private CoursesAdapter adapter;
+    private Button okButton;
 
     private Student student;
 
@@ -42,6 +43,13 @@ public class InfoFragment extends DialogFragment {
         View v = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_info, null);
         listOfCourses = (RecyclerView) v.findViewById(R.id.courses_list);
         averageMark = (TextView) v.findViewById(R.id.average_mark);
+        okButton = (Button) v.findViewById(R.id.ok);
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
 
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         listOfCourses.setLayoutManager(llm);
@@ -49,16 +57,9 @@ public class InfoFragment extends DialogFragment {
         listOfCourses.setAdapter(adapter);
 
 
-        averageMark.setText("Average mark : "+student.getAveregeMark());
+        averageMark.setText("Average mark : " + student.getAveregeMark());
 
         return new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.courses)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
                 .setView(v)
                 .create();
     }

@@ -4,6 +4,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        style="@style/TextViewStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dialod_view_dimen"
+        android:layout_marginLeft="@dimen/dialod_view_dimen"
+        android:text="@string/courses" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/courses_list"
         android:layout_width="match_parent"
@@ -12,6 +20,19 @@
     <TextView
         android:id="@+id/average_mark"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dialod_view_dimen"
+        android:layout_marginLeft="@dimen/dialod_view_dimen"
+        android:layout_marginRight="@dimen/dialod_view_dimen"/>
+
+    <Button
+        android:id="@+id/ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_gravity="right"
+        android:layout_margin="@dimen/dialod_view_dimen"
+        android:background="@drawable/button_background"
+        android:text="@string/ok" />
 
 </LinearLayout>
