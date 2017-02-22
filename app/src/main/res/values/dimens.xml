@@ -4,4 +4,5 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="dialod_view_dimen">16dp</dimen>
     <dimen name="dialod_button_dimen">8dp</dimen>
+    <dimen name="list_item_margin">8dp</dimen>
 </resources>

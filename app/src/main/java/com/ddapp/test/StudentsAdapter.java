@@ -46,7 +46,6 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.ViewHo
                 InfoFragment fragment = InfoFragment.newInstance(student.getId());
                 fragment.show(fm, Constants.INFO_DIALOG_TAG);
 
-
             }
         });
 

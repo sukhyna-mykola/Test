@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">Test</string>
     <string name="courses">Courses</string>
-    <string name="clear">CANCEL</string>
+    <string name="clear">CLEAR</string>
     <string name="ok">OK</string>
     <string name="filters">Filters</string>
-    <string name="mark_hint">mark</string>
+    <string name="mark_hint">Mark</string>
+    <string name="loading">Loading...</string>
 </resources>

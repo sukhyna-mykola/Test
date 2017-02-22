@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <TextView
-        style="@style/TextViewStyle"
+        style="@style/TitleStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dialod_view_dimen"
@@ -26,7 +26,9 @@
         android:layout_marginLeft="@dimen/dialod_view_dimen"
         android:layout_marginRight="@dimen/dialod_view_dimen"
         android:layout_marginTop="@dimen/dialod_view_dimen"
-        android:hint="@string/mark_hint" />
+        android:digits="1234567890"
+        android:hint="@string/mark_hint"
+        android:inputType="phone" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -36,18 +38,16 @@
 
         <Button
             android:id="@+id/clear"
+            style="@style/ButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dialod_button_dimen"
-            android:background="@drawable/button_background"
             android:text="@string/clear" />
 
         <Button
             android:id="@+id/ok"
+            style="@style/ButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dialod_button_dimen"
-            android:background="@drawable/button_background"
             android:text="@string/ok" />
     </LinearLayout>
 
