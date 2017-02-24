@@ -2,9 +2,11 @@ package com.ddapp.test;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -90,11 +92,8 @@ public class StudentsManager {
     }
 
     private void putDataIntoDB() {
-        for (Student student : students) {
-            helper.putDataToDB(student);
-        }
+        helper.putDataToDB(students);
     }
-
 
 
     private class RequestTask extends AsyncTask<String, String, Integer> {
@@ -104,8 +103,19 @@ public class StudentsManager {
 
             try {
                 InputStream is = connect(Constants.DATA_URL);
-                XmlParser parser = new XmlParser();
-                addStudents(parser.parse(is));
+                ByteArrayOutputStream out  = new ByteArrayOutputStream();
+                int byteRead = 0;
+                byte[] buffer = new byte[1024];
+                while ((byteRead=is.read(buffer))>0){
+                    out.write(buffer,0,byteRead);
+                }
+                out.close();
+                String jsonResponce = new String(out.toByteArray());
+
+                //XmlParser parser = new XmlParser();
+                //addStudents(parser.parse(is));
+
+                addStudents(new JsonParser(jsonResponce).parse());
                 putDataIntoDB();
                 saveStatusLogin(true);
                 removeAll();
@@ -121,18 +131,20 @@ public class StudentsManager {
         }
 
         private InputStream connect(String urlString) throws IOException {
-            URL url = new URL(urlString);
+            String uri = Uri.parse(urlString).buildUpon()
+                    .appendQueryParameter("format", "json").build().toString();
+            URL url = new URL(uri);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(10000 /* milliseconds */);
             conn.setConnectTimeout(15000 /* milliseconds */);
             conn.setRequestMethod("GET");
             conn.setDoInput(true);
-            conn.addRequestProperty("Content-Type", "text/xml; charset=utf-8");
             conn.connect();
             return conn.getInputStream();
         }
 
     }
+
     private void saveStatusLogin(boolean statusLogin) {
 
         SharedPreferences.Editor ed = sPref.edit();
@@ -140,7 +152,6 @@ public class StudentsManager {
         ed.commit();
 
     }
-
 
 
     public boolean checkStatusLogin() {

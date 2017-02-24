@@ -5,9 +5,9 @@ package com.ddapp.test;
  */
 public class Course {
     private String name;
-    private byte mark;
+    private int mark;
 
-    public Course(String name, byte mark) {
+    public Course(String name, int mark) {
         this.name = name;
         this.mark = mark;
     }
@@ -17,7 +17,7 @@ public class Course {
         return name;
     }
 
-    public byte getMark() {
+    public int getMark() {
         return mark;
     }
 }

@@ -16,14 +16,15 @@ public class Constants {
 
     public static final String STUDENTS_TAG = "ArrayOfTestController.Student";
     public static final String STUDENT_TAG = "TestController.Student";
-    public static final String BIRTHDAY_TAG = "Birthday";
-    public static final String COURSES_TAG = "Courses";
     public static final String COURSE_TAG = "TestController.Course";
-    public static final String MARK_TAG = "Mark";
-    public static final String NAME_TAG = "Name";
-    public static final String FIRST_NAME_TAG = "FirstName";
-    public static final String LAST_NAME_TAG = "LastName";
-    public static final String ID_TAG = "Id";
+
+    public static final String BIRTHDAY_TAG = "birthday";
+    public static final String COURSES_TAG = "courses";
+    public static final String MARK_TAG = "mark";
+    public static final String NAME_TAG = "name";
+    public static final String FIRST_NAME_TAG = "firstName";
+    public static final String LAST_NAME_TAG = "lastName";
+    public static final String ID_TAG = "id";
 
     public static final String ID_KEY = "com.ddapp.test.ID_KEY";
 
@@ -35,11 +36,14 @@ public class Constants {
 
     public static final String DB_NAME = "db_students";
     public static final String TABLE_STUDENTS = "students";
+    public static final String TABLE_COURSES = "courses";
 
     public static final String BIRTHDAY_FIELD = "birthday";
     public static final String FIRST_NAME_FIELD = "first_name";
+    public static final String COURSE_NAME_FIELD = "course_name";
     public static final String LAST_NAME_FIELD = "last_name";
-    public static final String ID_FIELD = "id";
+    public static final String ID_STUDENT_FIELD = "id_student";
+    public static final String ID_COURSE_FIELD = "id_course";
 
     public static final String COURSE_NULL_FIELD = "coursenull";
     public static final String COURSE_FIRST_FIELD = "coursefirst";

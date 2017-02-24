@@ -25,7 +25,7 @@ class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL("create table " + Constants.TABLE_STUDENTS + " ("
-                + Constants.ID_FIELD + " " + Constants.TEXT + ","
+                + Constants.ID_STUDENT_FIELD + " " + Constants.TEXT + ","
                 + Constants.LAST_NAME_FIELD + " " + Constants.TEXT + ","
                 + Constants.FIRST_NAME_FIELD + " " + Constants.TEXT + ","
                 + Constants.BIRTHDAY_FIELD + " " + Constants.INTEGER + ","
@@ -77,7 +77,7 @@ class DBHelper extends SQLiteOpenHelper {
 
             int firstNameColIndex = c.getColumnIndex(Constants.FIRST_NAME_FIELD);
             int lastNameColIndex = c.getColumnIndex(Constants.LAST_NAME_FIELD);
-            int idColIndex = c.getColumnIndex(Constants.ID_FIELD);
+            int idColIndex = c.getColumnIndex(Constants.ID_STUDENT_FIELD);
             int birthdayColIndex = c.getColumnIndex(Constants.BIRTHDAY_FIELD);
             int courceMarkNullColIndex = c.getColumnIndex(Constants.COURSE_NULL_FIELD);
             int courceMarkFirstColIndex = c.getColumnIndex(Constants.COURSE_FIRST_FIELD);
@@ -116,25 +116,29 @@ class DBHelper extends SQLiteOpenHelper {
         return students;
     }
 
-    public void putDataToDB(Student student) {
+    public void putDataToDB(List<Student> students) {
         ContentValues cv = new ContentValues();
         SQLiteDatabase db = getWritableDatabase();
-        Log.d(Constants.TAG, "name = " + student.getFirstName());
+        for (Student student : students) {
 
-        cv.put(Constants.ID_FIELD, student.getId());
-        cv.put(Constants.FIRST_NAME_FIELD, student.getFirstName());
-        cv.put(Constants.LAST_NAME_FIELD, student.getLastName());
-        cv.put(Constants.BIRTHDAY_FIELD, student.getBirthday());
-        for (Course course : student.getCourses()) {
-            cv.put(Constants.coursesMap.get(course.getName()), course.getMark());
+            Log.d(Constants.TAG, "name = " + student.getFirstName());
+
+            cv.put(Constants.ID_STUDENT_FIELD, student.getId());
+            cv.put(Constants.FIRST_NAME_FIELD, student.getFirstName());
+            cv.put(Constants.LAST_NAME_FIELD, student.getLastName());
+            cv.put(Constants.BIRTHDAY_FIELD, student.getBirthday());
+            for (Course course : student.getCourses()) {
+                cv.put(Constants.coursesMap.get(course.getName()), course.getMark());
+            }
+            db.insert(Constants.TABLE_STUDENTS, null, cv);
+            cv.clear();
         }
-        db.insert(Constants.TABLE_STUDENTS, null, cv);
         db.close();
     }
 
     public void clearDB() {
         SQLiteDatabase db = getWritableDatabase();
-        Log.d(Constants.TAG," deleted "+db.delete(Constants.TABLE_STUDENTS, null, null));
+        Log.d(Constants.TAG, " deleted " + db.delete(Constants.TABLE_STUDENTS, null, null));
         db.close();
     }
 }
