@@ -1,4 +1,4 @@
-package com.ddapp.test;
+package com.ddapp.test.info;
 
 
 import android.app.Dialog;
@@ -12,6 +12,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.ddapp.test.Constants;
+import com.ddapp.test.CoursesAdapter;
+import com.ddapp.test.R;
+import com.ddapp.test.StudentItem;
+import com.ddapp.test.StudentsManager;
+
 /**
  * Created by mykola on 20.02.17.
  */
@@ -19,10 +25,11 @@ import android.widget.TextView;
 public class InfoFragment extends DialogFragment {
     private RecyclerView listOfCourses;
     private TextView averageMark;
-    private CoursesAdapter adapter;
     private Button okButton;
 
-    private Student student;
+    private CoursesAdapter adapter;
+
+    private StudentItem student;
 
     public static InfoFragment newInstance(String id) {
 

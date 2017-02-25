@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ddapp.test.database.Course;
+
 import java.util.List;
 
 /**
@@ -13,7 +15,7 @@ import java.util.List;
  */
 
 public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.ViewHolder> {
-    private List<Course> courses;
+    private List<CourseItem> courses;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -28,7 +30,7 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.ViewHold
     }
 
 
-    public CoursesAdapter(List<Course> courses) {
+    public CoursesAdapter(List<CourseItem> courses) {
         this.courses = courses;
     }
 
@@ -46,7 +48,7 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Course course = courses.get(position);
+        CourseItem course = courses.get(position);
         holder.courseName.setText(course.getName());
         holder.courseMark.setText(course.getMark()+" ");
 

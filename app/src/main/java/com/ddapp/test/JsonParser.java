@@ -29,13 +29,14 @@ public class JsonParser {
 
     /**
      * Розбирає JSON відповідь від сервера
+     *
      * @return список студентів
      * @throws JSONException
      */
-    public List<Student> parse() throws JSONException {
+    public List<StudentItem> parse() throws JSONException {
 
-        List<Student> students = new ArrayList<>();
-        List<Course> courses;
+        List<StudentItem> students = new ArrayList<>();
+        List<CourseItem> courses;
 
         JSONArray studentsArray = new JSONArray(json);
         JSONArray coursesArray = null;
@@ -63,9 +64,9 @@ public class JsonParser {
                 course = coursesArray.getJSONObject(j);
                 name = course.getString(NAME_TAG);
                 mark = course.getInt(MARK_TAG);
-                courses.add(new Course(name, mark));
+                courses.add(new CourseItem(mark, name));
             }
-            students.add(new Student(id, firstName, lastName, birthday, courses));
+            students.add(new StudentItem(id, firstName, lastName, birthday, courses));
 
         }
         return students;

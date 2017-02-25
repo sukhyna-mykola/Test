@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.ddapp.test.info.InfoFragment;
+
 import java.util.List;
 
 /**
@@ -17,10 +19,10 @@ import java.util.List;
  */
 
 public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.ViewHolder> {
-    private List<Student> students;
+    private List<StudentItem> students;
     private Context context;
 
-    public StudentsAdapter(List<Student> students, Context context) {
+    public StudentsAdapter(List<StudentItem> students, Context context) {
         this.students = students;
         this.context = context;
     }
@@ -35,7 +37,7 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final Student student = students.get(position);
+        final StudentItem student = students.get(position);
         holder.studentName.setText(student.getFirstName() + " " + student.getLastName());
         holder.studentBirthday.setText(student.getStringBirthday());
         holder.studentInfo.setOnClickListener(new View.OnClickListener() {
