@@ -67,7 +67,7 @@ public class DatabaseManager {
         SQLiteDatabase db = DatabaseManager.getInstance().openDatabase();
 
         String selectQuery = "SELECT * FROM " + Student.TABLE + " LIMIT 20 OFFSET " + offset;
-        Log.d(TAG, selectQuery);
+        //Log.d(TAG, selectQuery);
 
         Cursor cursor = db.rawQuery(selectQuery, null);
         List<StudentItem> students = parse(cursor);
@@ -104,7 +104,7 @@ public class DatabaseManager {
                         " join " + Student.TABLE + " ON " + Student.TABLE + "." + Student.KEY_StudID + "=" + StudentCourse.TABLE + "." + StudentCourse.KEY_StudID +
                         " join " + Course.TABLE + " ON " + Course.TABLE + "." + Course.KEY_CourseId + "=" + StudentCourse.TABLE + "." + StudentCourse.KEY_CourseId +
                         " LIMIT 80 OFFSET " + offset;*/
-        Log.d(TAG, selectQuery);
+       // Log.d(TAG, selectQuery);
         Cursor cursor = db.rawQuery(selectQuery, null);
         List<StudentItem> students = parse(cursor);
         cursor.close();
@@ -137,7 +137,7 @@ public class DatabaseManager {
                 course = new CourseItem();
                 course.setMark(cursor.getInt(cursor.getColumnIndex(StudentCourse.KEY_Mark)));
                 course.setName(cursor.getString(cursor.getColumnIndex(Course.KEY_Name)));
-                Log.d(TAG, course.toString());
+                //Log.d(TAG, course.toString());
                 items.add(course);
             } while (cursor.moveToNext());
         }
@@ -169,7 +169,7 @@ public class DatabaseManager {
 
                 List<CourseItem> courseItems = getCourses(student.getId());
                 student.setCourses(courseItems);
-                Log.d(TAG, student.toString());
+                //Log.d(TAG, student.toString());
                 students.add(student);
             } while (cursor.moveToNext());
         }

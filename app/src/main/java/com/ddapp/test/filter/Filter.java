@@ -46,4 +46,9 @@ public class Filter {
     public Filter() {
         clear();
     }
+
+    @Override
+    public String toString() {
+        return name+" "+mark+" "+ use;
+    }
 }
