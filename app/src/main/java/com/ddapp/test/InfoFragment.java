@@ -19,10 +19,11 @@ import android.widget.TextView;
 public class InfoFragment extends DialogFragment {
     private RecyclerView listOfCourses;
     private TextView averageMark;
-    private CoursesAdapter adapter;
     private Button okButton;
 
-    private Student student;
+    private CoursesAdapter adapter;
+
+    private StudentItem student;
 
     public static InfoFragment newInstance(String id) {
 

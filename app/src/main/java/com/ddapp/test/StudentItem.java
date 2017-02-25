@@ -1,5 +1,7 @@
 package com.ddapp.test;
 
+import com.ddapp.test.database.Course;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -8,14 +10,14 @@ import java.util.List;
  * Created by mykola on 20.02.17.
  */
 
-public class Student {
+public class StudentItem {
     private String id;
     private String firstName;
     private String lastName;
     private long birthday;
-    private List<Course> courses;
+    private List<CourseItem> courses;
 
-    public Student(String id, String firstName, String lastName, long birthday, List<Course> courses) {
+    public StudentItem(String id, String firstName, String lastName, long birthday, List<CourseItem> courses) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -23,7 +25,7 @@ public class Student {
         this.courses = courses;
     }
 
-    public List<Course> getCourses() {
+    public List<CourseItem> getCourses() {
 
         return courses;
     }
@@ -51,13 +53,41 @@ public class Student {
         return dateText;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setBirthday(long birthday) {
+        this.birthday = birthday;
+    }
+
+    public void setCourses(List<CourseItem> courses) {
+        this.courses = courses;
+    }
+
+    public StudentItem() {
+
+    }
+
     public float getAveregeMark() {
         float result = 0;
         float count = courses.size();
-        for (Course course : courses) {
+        for (CourseItem course : courses) {
             result += course.getMark();
         }
         return result / count;
     }
 
+    @Override
+    public String toString() {
+        return firstName + " "+ lastName;
+    }
 }

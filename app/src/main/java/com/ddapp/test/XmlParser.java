@@ -2,6 +2,8 @@ package com.ddapp.test;
 
 import android.util.Xml;
 
+import com.ddapp.test.database.Course;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -50,13 +52,13 @@ public class XmlParser {
         return students;
     }
 
-    private Student readStudent(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private StudentItem readStudent(XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, ns, Constants.STUDENT_TAG);
 
         String firstName = null;
         String lastName = null;
         String id = null;
-        List<Course> courses = null;
+        List<CourseItem> courses = null;
         String birstday = null;
 
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -79,11 +81,11 @@ public class XmlParser {
             }
         }
 
-        return new Student(id, firstName, lastName, Long.parseLong(birstday), courses);
+        return new StudentItem(id, firstName, lastName, Long.parseLong(birstday), courses);
 
     }
 
-    private Course readCourse(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private CourseItem readCourse(XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, ns, Constants.COURSE_TAG);
 
         String name = null;
@@ -103,7 +105,7 @@ public class XmlParser {
             }
         }
 
-        return new Course(name, Byte.parseByte(mark));
+        return new CourseItem(Integer.parseInt(mark),name);
 
     }
 
@@ -117,8 +119,8 @@ public class XmlParser {
 
 
     // Processes link tags in the feed.
-    private List<Course> readTagArray(XmlPullParser parser, String TAG) throws IOException, XmlPullParserException {
-        List<Course> courses = new ArrayList<>();
+    private List<CourseItem> readTagArray(XmlPullParser parser, String TAG) throws IOException, XmlPullParserException {
+        List<CourseItem> courses = new ArrayList<>();
 
         parser.require(XmlPullParser.START_TAG, ns, TAG);
         while (parser.next() != XmlPullParser.END_TAG) {

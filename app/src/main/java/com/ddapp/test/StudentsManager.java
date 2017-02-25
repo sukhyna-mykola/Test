@@ -6,6 +6,15 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.ddapp.test.database.Course;
+import com.ddapp.test.database.CourseTable;
+import com.ddapp.test.database.DBHelper;
+import com.ddapp.test.database.DatabaseManager;
+import com.ddapp.test.database.Student;
+import com.ddapp.test.database.StudentCourse;
+import com.ddapp.test.database.StudentCourseTable;
+import com.ddapp.test.database.StudentTable;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,15 +24,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.ddapp.test.Constants.COURSES;
+import static com.ddapp.test.Constants.TAG;
 
 /**
  * Created by mykola on 20.02.17.
  */
 public class StudentsManager {
     private static StudentsManager manager;
-    private List<Student> students;
+    private List<StudentItem> students;
 
-    private DBHelper helper;
     private Filter filter;
     private Update callback;
     private SharedPreferences sPref;
@@ -40,12 +50,12 @@ public class StudentsManager {
 
     private StudentsManager(Context context) {
         students = new ArrayList<>();
-        helper = new DBHelper(context);
         filter = new Filter();
+        DatabaseManager.initializeInstance(new DBHelper(context));
         sPref = context.getSharedPreferences(Constants.SHARED_PREFERENCES, MODE_PRIVATE);
     }
 
-    public List<Student> getStudents() {
+    public List<StudentItem> getStudents() {
         return students;
     }
 
@@ -54,9 +64,8 @@ public class StudentsManager {
     }
 
 
-    public Student getStudent(String id) {
-        for (Student student : students) {
-
+    public StudentItem getStudent(String id) {
+        for (StudentItem student : students) {
             if (student.getId().equals(id))
                 return student;
         }
@@ -67,9 +76,10 @@ public class StudentsManager {
     public void loadDataFromDB() {
         Log.d(Constants.TAG, "filter.status = " + filter.isState());
         if (filter.isState()) {
-            addStudents(helper.readDataFromDB(filter, students.size()));
+            //addStudents(helper.readDataFromDB(filter, students.size()));
         } else {
-            addStudents(helper.readDataFromDB(students.size()));
+            Log.d(Constants.TAG, "getStudentCourse()");
+            addStudents(DatabaseManager.getInstance().getStudentCourse(students.size()));
         }
 
         callback.update();
@@ -85,16 +95,46 @@ public class StudentsManager {
         new RequestTask().execute();
     }
 
-    private void addStudents(List<Student> newStudents) {
-        for (Student student : newStudents) {
+    private void addStudents(List<StudentItem> newStudents) {
+        for (StudentItem student : newStudents) {
             students.add(student);
         }
     }
 
     private void putDataIntoDB() {
-        helper.putDataToDB(students);
+        StudentTable studentTable = new StudentTable();
+        CourseTable courseTable = new CourseTable();
+        StudentCourseTable studentCourseTable = new StudentCourseTable();
+
+        studentCourseTable.delete();
+        courseTable.delete();
+        studentTable.delete();
+
+        for (int i = 0; i < COURSES.length; i++) {
+            courseTable.insert(new Course(COURSES[i], i));
+        }
+
+        for (StudentItem student : students) {
+            Log.d(TAG,student.toString());
+            Student stud = new Student(student.getId(), student.getFirstName(), student.getLastName(), student.getBirthday());
+            studentTable.insert(stud);
+
+            for (CourseItem course : student.getCourses()) {
+                StudentCourse studCourse = new StudentCourse(student.getId(), getIdCourse(course.getName()),course.getMark());
+                studentCourseTable.insert(studCourse);
+            }
+        }
+
     }
 
+    private int getIdCourse(String name) {
+        for (int i = 0; i < COURSES.length; i++) {
+            if (COURSES[i].equals(name))
+                return i;
+
+        }
+        return -1;
+    }
 
     private class RequestTask extends AsyncTask<String, String, Integer> {
 
@@ -103,11 +143,11 @@ public class StudentsManager {
 
             try {
                 InputStream is = connect(Constants.DATA_URL);
-                ByteArrayOutputStream out  = new ByteArrayOutputStream();
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
                 int byteRead = 0;
                 byte[] buffer = new byte[1024];
-                while ((byteRead=is.read(buffer))>0){
-                    out.write(buffer,0,byteRead);
+                while ((byteRead = is.read(buffer)) > 0) {
+                    out.write(buffer, 0, byteRead);
                 }
                 out.close();
                 String jsonResponce = new String(out.toByteArray());
