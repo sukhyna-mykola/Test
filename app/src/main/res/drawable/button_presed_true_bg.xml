@@ -3,8 +3,8 @@
     <solid android:color="@color/colorAccent" />
     <corners android:radius="3dp" />
     <padding
-        android:bottom="@dimen/dialod_button_dimen"
-        android:left="@dimen/dialod_button_dimen"
-        android:right="@dimen/dialod_button_dimen"
-        android:top="@dimen/dialod_button_dimen" />
+        android:bottom="@dimen/dialod_view_dimen"
+        android:left="@dimen/dialod_view_dimen"
+        android:right="@dimen/dialod_view_dimen"
+        android:top="@dimen/dialod_view_dimen" />
 </shape>

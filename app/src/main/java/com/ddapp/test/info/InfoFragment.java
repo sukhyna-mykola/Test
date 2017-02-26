@@ -2,6 +2,7 @@ package com.ddapp.test.info;
 
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -9,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.ddapp.test.Constants;
@@ -25,7 +25,6 @@ import com.ddapp.test.StudentsManager;
 public class InfoFragment extends DialogFragment {
     private RecyclerView listOfCourses;
     private TextView averageMark;
-    private Button okButton;
 
     private CoursesAdapter adapter;
 
@@ -50,13 +49,7 @@ public class InfoFragment extends DialogFragment {
         View v = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_info, null);
         listOfCourses = (RecyclerView) v.findViewById(R.id.courses_list);
         averageMark = (TextView) v.findViewById(R.id.average_mark);
-        okButton = (Button) v.findViewById(R.id.ok);
-        okButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
+
 
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         listOfCourses.setLayoutManager(llm);
@@ -68,6 +61,13 @@ public class InfoFragment extends DialogFragment {
 
         return new AlertDialog.Builder(getActivity())
                 .setView(v)
+                .setTitle(R.string.courses)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                      dismiss();
+                    }
+                })
                 .create();
     }
 

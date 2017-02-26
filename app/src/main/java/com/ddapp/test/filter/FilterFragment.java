@@ -1,19 +1,17 @@
 package com.ddapp.test.filter;
 
 import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatSpinner;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 
 import com.ddapp.test.Constants;
 import com.ddapp.test.R;
@@ -23,12 +21,11 @@ import com.ddapp.test.StudentsManager;
  * Created by mykola on 20.02.17.
  */
 
-public class FilterFragment extends DialogFragment implements View.OnClickListener {
+public class FilterFragment extends DialogFragment {
     private AppCompatSpinner courseSelectField;
     private EditText markInputField;
-    private Button okButton;
-    private Button clearButton;
-    
+
+
     private Filter filter;
 
     @Override
@@ -37,11 +34,6 @@ public class FilterFragment extends DialogFragment implements View.OnClickListen
         View v = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_filter, null);
         courseSelectField = (AppCompatSpinner) v.findViewById(R.id.filter_courses_list);
         markInputField = (EditText) v.findViewById(R.id.filter_mark);
-        okButton = (Button) v.findViewById(R.id.ok);
-        clearButton = (Button) v.findViewById(R.id.clear);
-
-        okButton.setOnClickListener(this);
-        clearButton.setOnClickListener(this);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, Constants.COURSES);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -50,12 +42,41 @@ public class FilterFragment extends DialogFragment implements View.OnClickListen
         filter = StudentsManager.getInstance(getContext()).getFilter();
         updateUI(filter);
 
-        Dialog dialog = new Dialog(getActivity(), R.style.MyCustomTheme);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-        dialog.setContentView(v);
-        dialog.getWindow().setGravity(Gravity.RIGHT);
+        Dialog dialog = new AlertDialog.Builder(getContext())
+                .setView(v)
+                .setTitle(R.string.filters)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
 
-        dialog.getWindow().setLayout(getContext().getResources().getDisplayMetrics().widthPixels / 2, FrameLayout.LayoutParams.WRAP_CONTENT);
+                            int mark = Integer.parseInt(markInputField.getText().toString());
+
+                            filter.setUse(true);
+                            filter.setMark(mark);
+                            filter.setName(Constants.COURSES[courseSelectField.getSelectedItemPosition()]);
+
+                            StudentsManager.getInstance(getContext()).removeAll();
+                            StudentsManager.getInstance(getContext()).loadAsyncDataFromDB();
+                            dismiss();
+                        } catch (Exception e) {
+                            filter.setUse(false);
+                            filter.setMark(-1);
+                            updateUI(filter);
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.clear, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        filter.clear();
+                        StudentsManager.getInstance(getContext()).removeAll();
+                        StudentsManager.getInstance(getContext()).loadAsyncDataFromDB();
+                        dismiss();
+                    }
+                })
+                .create();
+
         dialog.getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
         );
@@ -84,35 +105,5 @@ public class FilterFragment extends DialogFragment implements View.OnClickListen
         return 0;
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.ok: {
-                try {
 
-                    int mark = Integer.parseInt(markInputField.getText().toString());
-
-                    filter.setUse(true);
-                    filter.setMark(mark);
-                    filter.setName(Constants.COURSES[courseSelectField.getSelectedItemPosition()]);
-
-                    StudentsManager.getInstance(getContext()).removeAll();
-                    StudentsManager.getInstance(getContext()).loadAsyncDataFromDB();
-                    dismiss();
-                } catch (Exception e) {
-                    filter.setUse(false);
-                    filter.setMark(-1);
-                    updateUI(filter);
-                }
-                break;
-            }
-            case R.id.clear: {
-                filter.clear();
-                StudentsManager.getInstance(getContext()).removeAll();
-                StudentsManager.getInstance(getContext()).loadAsyncDataFromDB();
-                dismiss();
-                break;
-            }
-        }
-    }
 }
