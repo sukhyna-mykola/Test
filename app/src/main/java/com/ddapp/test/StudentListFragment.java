@@ -23,7 +23,8 @@ public class StudentListFragment extends Fragment implements StudentsManager.Upd
     private RecyclerView listOfStudents;
     private StudentsAdapter adapter;
     private LinearLayoutManager llm;
-    private RelativeLayout bottomLayout;
+    private RelativeLayout loadingLayout;
+    private EndlessRecyclerOnScrollListener endlessRecyclerOnScrollListener;
 
     private boolean loaded;
 
@@ -42,7 +43,7 @@ public class StudentListFragment extends Fragment implements StudentsManager.Upd
 
 
         listOfStudents = (RecyclerView) view.findViewById(R.id.students_list);
-        bottomLayout = (RelativeLayout) view.findViewById(R.id.loadItemsLayout_recyclerView);
+        loadingLayout = (RelativeLayout) view.findViewById(R.id.loadItemsLayout_recyclerView);
 
         llm = new LinearLayoutManager(getContext());
         adapter = new StudentsAdapter(StudentsManager.getInstance(getContext()).getStudents(), getContext());
@@ -50,13 +51,17 @@ public class StudentListFragment extends Fragment implements StudentsManager.Upd
         listOfStudents.setLayoutManager(llm);
         listOfStudents.setAdapter(adapter);
 
-        listOfStudents.addOnScrollListener(new EndlessRecyclerOnScrollListener(llm) {
+
+        endlessRecyclerOnScrollListener = new
+         EndlessRecyclerOnScrollListener(llm) {
             @Override
             public void onLoadMore() {
-                bottomLayout.setVisibility(View.VISIBLE);
+                loadingLayout.setVisibility(View.VISIBLE);
                 StudentsManager.getInstance(getContext()).loadDataFromDB();
             }
-        });
+        };
+
+        listOfStudents.addOnScrollListener(endlessRecyclerOnScrollListener);
 
 
         StudentsManager manager = StudentsManager.getInstance(getContext());
@@ -99,10 +104,15 @@ public class StudentListFragment extends Fragment implements StudentsManager.Upd
             public void run() {
                 Log.d(Constants.TAG, "Update");
                 adapter.notifyDataSetChanged();
-                bottomLayout.setVisibility(View.GONE);
+                loadingLayout.setVisibility(View.GONE);
             }
         });
 
+    }
+
+    @Override
+    public void resetViews() {
+        endlessRecyclerOnScrollListener.reset();
     }
 
 

@@ -83,6 +83,7 @@ public class StudentsManager {
      */
     public void removeAll() {
         students.clear();
+        callback.resetViews();
     }
 
     /**
@@ -98,6 +99,7 @@ public class StudentsManager {
      */
     public  void loadDataFromDB() {
         new ReadDatabaseTask().execute();
+
     }
 
     /**
@@ -277,5 +279,6 @@ public class StudentsManager {
      */
     public interface Update {
         void update();
+        void resetViews();
     }
 }
