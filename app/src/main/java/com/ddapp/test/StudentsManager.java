@@ -87,20 +87,35 @@ public class StudentsManager {
     }
 
     /**
-     * Завантажує дані про студентів з сервера
+     * Завантажує дані про студентів з сервера  в новому потоці
      */
-    public  void loadDataFromURL() {
+    public void loadAsyncDataFromURL() {
         new HTTPTask().execute();
     }
 
+    /**
+     * Завантажує дані про студентів з сервера
+     */
+    public void loadSyncDataFromURL() {
+        readDataFromURL();
+    }
+
+    /**
+     * Завантажує дані про студентів з бази даних в новому потоці
+     */
+    public void loadAsyncDataFromDB() {
+        new ReadDatabaseTask().execute();
+
+    }
 
     /**
      * Завантажує дані про студентів з бази даних
      */
-    public  void loadDataFromDB() {
-        new ReadDatabaseTask().execute();
-
+    public void loadSyncDataFromDB() {
+        readDataFromDB();
+        callback.update();
     }
+
 
     /**
      * Додає нових студениів в список
@@ -126,7 +141,7 @@ public class StudentsManager {
     /**
      * Вставляє дані в базу даних
      */
-    private  void putDataIntoDB(List<StudentItem> tmp) {
+    private void putDataIntoDB(List<StudentItem> tmp) {
         StudentTable studentTable = new StudentTable();
         CourseTable courseTable = new CourseTable();
         StudentCourseTable studentCourseTable = new StudentCourseTable();
@@ -180,6 +195,50 @@ public class StudentsManager {
 
     }
 
+    /**
+     * Зчитує дані з сервера
+     */
+    private void readDataFromURL() {
+
+        try {
+            InputStream is = connect(Constants.DATA_URL);
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            int byteRead = 0;
+            byte[] buffer = new byte[1024];
+            while ((byteRead = is.read(buffer)) > 0) {
+                out.write(buffer, 0, byteRead);
+            }
+            out.close();
+            String jsonResponce = new String(out.toByteArray());
+
+            List<StudentItem> tmp = new JsonParser(jsonResponce).parse();
+            putDataIntoDB(tmp);
+            saveStatusLogin(true);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d(Constants.TAG, "error " + e);
+        }
+    }
+
+    /**
+     * Отримує з’єднання з сервером
+     * @param urlString - URL
+     * @return вхідний потік
+     * @throws IOException
+     */
+    private InputStream connect(String urlString) throws IOException {
+        String uri = Uri.parse(urlString).buildUpon()
+                .appendQueryParameter("format", "json").build().toString();
+        URL url = new URL(uri);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setReadTimeout(10000 /* milliseconds */);
+        conn.setConnectTimeout(15000 /* milliseconds */);
+        conn.setRequestMethod("GET");
+        conn.setDoInput(true);
+        conn.connect();
+        return conn.getInputStream();
+    }
 
     public boolean checkStatusLogin() {
         return sPref.getBoolean(Constants.LOGIN_KEY, false);
@@ -192,48 +251,14 @@ public class StudentsManager {
 
         @Override
         protected Void doInBackground(Void... voids) {
-
-            try {
-                InputStream is = connect(Constants.DATA_URL);
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                int byteRead = 0;
-                byte[] buffer = new byte[1024];
-                while ((byteRead = is.read(buffer)) > 0) {
-                    out.write(buffer, 0, byteRead);
-                }
-                out.close();
-                String jsonResponce = new String(out.toByteArray());
-
-                List<StudentItem> tmp = new JsonParser(jsonResponce).parse();
-                putDataIntoDB(tmp);
-                saveStatusLogin(true);
-                readDataFromDB();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.d(Constants.TAG, "error " + e);
-            }
-
+            readDataFromURL();
             return null;
         }
 
-        private InputStream connect(String urlString) throws IOException {
-            String uri = Uri.parse(urlString).buildUpon()
-                    .appendQueryParameter("format", "json").build().toString();
-            URL url = new URL(uri);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(10000 /* milliseconds */);
-            conn.setConnectTimeout(15000 /* milliseconds */);
-            conn.setRequestMethod("GET");
-            conn.setDoInput(true);
-            conn.connect();
-            return conn.getInputStream();
-        }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            callback.update();
         }
 
         @Override
@@ -241,6 +266,7 @@ public class StudentsManager {
             super.onPreExecute();
         }
     }
+
 
     /**
      * Потік, для завантаження даних з бази даних
@@ -279,6 +305,7 @@ public class StudentsManager {
      */
     public interface Update {
         void update();
+
         void resetViews();
     }
 }

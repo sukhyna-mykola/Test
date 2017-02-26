@@ -97,7 +97,7 @@ public class FilterFragment extends DialogFragment implements View.OnClickListen
                     filter.setName(Constants.COURSES[courseSelectField.getSelectedItemPosition()]);
 
                     StudentsManager.getInstance(getContext()).removeAll();
-                    StudentsManager.getInstance(getContext()).loadDataFromDB();
+                    StudentsManager.getInstance(getContext()).loadAsyncDataFromDB();
                     dismiss();
                 } catch (Exception e) {
                     filter.setUse(false);
@@ -109,7 +109,7 @@ public class FilterFragment extends DialogFragment implements View.OnClickListen
             case R.id.clear: {
                 filter.clear();
                 StudentsManager.getInstance(getContext()).removeAll();
-                StudentsManager.getInstance(getContext()).loadDataFromDB();
+                StudentsManager.getInstance(getContext()).loadAsyncDataFromDB();
                 dismiss();
                 break;
             }

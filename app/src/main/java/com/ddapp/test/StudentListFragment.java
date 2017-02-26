@@ -1,5 +1,10 @@
 package com.ddapp.test;
 
+import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.ddapp.test.filter.FilterFragment;
+import com.ddapp.test.services.HTTPIntentService;
 
 
 public class StudentListFragment extends Fragment implements StudentsManager.Update {
@@ -25,6 +31,8 @@ public class StudentListFragment extends Fragment implements StudentsManager.Upd
     private LinearLayoutManager llm;
     private RelativeLayout loadingLayout;
     private EndlessRecyclerOnScrollListener endlessRecyclerOnScrollListener;
+    private StudentsManager manager;
+    private BroadcastReceiver br;
 
     private boolean loaded;
 
@@ -50,30 +58,52 @@ public class StudentListFragment extends Fragment implements StudentsManager.Upd
 
         listOfStudents.setLayoutManager(llm);
         listOfStudents.setAdapter(adapter);
-
-
-        endlessRecyclerOnScrollListener = new
-         EndlessRecyclerOnScrollListener(llm) {
+        br = new BroadcastReceiver() {
             @Override
-            public void onLoadMore() {
-                loadingLayout.setVisibility(View.VISIBLE);
-                StudentsManager.getInstance(getContext()).loadDataFromDB();
+            public void onReceive(Context context, Intent intent) {
+                int status = intent.getIntExtra(Constants.STATUS, 0);
+                Log.d(Constants.TAG, "status = " + status);
+                switch (status) {
+                    case Constants.STATUS_COMPLETE:
+                        manager.loadAsyncDataFromDB();
+                        loaded = true;
+                        break;
+                }
+
             }
         };
+
+        endlessRecyclerOnScrollListener = new
+                EndlessRecyclerOnScrollListener(llm) {
+                    @Override
+                    public void onLoadMore() {
+                        loadingLayout.setVisibility(View.VISIBLE);
+                        StudentsManager.getInstance(getContext()).loadAsyncDataFromDB();
+                    }
+                };
 
         listOfStudents.addOnScrollListener(endlessRecyclerOnScrollListener);
 
 
-        StudentsManager manager = StudentsManager.getInstance(getContext());
+        manager = StudentsManager.getInstance(getContext());
         manager.setCallback(this);
 
         if (manager.checkStatusLogin()) {
-            manager.loadDataFromDB();
+            loaded = true;
+            manager.loadAsyncDataFromDB();
         } else {
-            manager.loadDataFromURL();
+            loaded = false;
+
+            if (!isMyServiceRunning(HTTPIntentService.class)) {
+                Log.d(Constants.TAG, "run service");
+                Intent intent = new Intent(getContext(), HTTPIntentService.class);
+                getContext().startService(intent);
+            }
         }
+
         return view;
     }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -97,8 +127,6 @@ public class StudentListFragment extends Fragment implements StudentsManager.Upd
 
     @Override
     public void update() {
-        if (!loaded)
-            loaded = !loaded;
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -115,5 +143,38 @@ public class StudentListFragment extends Fragment implements StudentsManager.Upd
         endlessRecyclerOnScrollListener.reset();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(Constants.TAG, "onStart . loaded = " + loaded);
+        if (!loaded) {
+            IntentFilter intFilt = new IntentFilter(Constants.ACTION);
+            getActivity().registerReceiver(br, intFilt);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(Constants.TAG, "onStop . loaded = " + loaded);
+        if (!loaded) {
+            getActivity().unregisterReceiver(br);
+        }
+    }
+
+    /**
+     * Перевіряє, чи запущений сервіс на даний момент
+     * @param serviceClass
+     * @return
+     */
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

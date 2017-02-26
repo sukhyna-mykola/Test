@@ -37,5 +37,8 @@ public class Constants {
 
     public static final String [] COURSES= {"Course-0","Course-1","Course-2","Course-3"};
 
+    public static final String ACTION  ="com.ddapp.test.ACTION";
+    public static final String STATUS = "com.ddapp.test.STATUS";
+    public static final int STATUS_COMPLETE = 1;
 
 }
